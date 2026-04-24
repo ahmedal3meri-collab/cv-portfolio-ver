@@ -1,0 +1,9 @@
+{
+  "name": "cv-portfolio-generator",
+  "version": "1.0.0",
+  "description": "AI-powered CV to Portfolio generator",
+  "private": true,
+  "engines": {
+    "node": "18.x"
+  }
+}
