@@ -168,7 +168,6 @@ h1{font-family:var(--fh);font-size:clamp(32px,5.5vw,64px);font-weight:800;line-h
 
   <div class="card">
 
-    <!-- UPLOADS -->
     <div class="sl">📁 Upload Files</div>
     <div class="uploads-row">
       <div>
@@ -200,7 +199,6 @@ h1{font-family:var(--fh);font-size:clamp(32px,5.5vw,64px);font-weight:800;line-h
 
     <div class="dv"></div>
 
-    <!-- THEMES -->
     <div class="sl">🎨 Choose Design Theme</div>
     <div class="themes-grid" id="themes-grid">
 
@@ -270,13 +268,10 @@ h1{font-family:var(--fh);font-size:clamp(32px,5.5vw,64px);font-weight:800;line-h
 
     </div>
 
-    <!-- ERROR -->
     <div class="err" id="err"></div>
 
-    <!-- GEN BTN -->
     <button class="gbtn" id="gbtn">⚡ Generate My Portfolio</button>
 
-    <!-- PROGRESS -->
     <div class="pw" id="pw">
       <div class="steps">
         <div class="step" id="s1"><div class="si">📤</div><span>Reading your CV…</span></div>
@@ -287,7 +282,6 @@ h1{font-family:var(--fh);font-size:clamp(32px,5.5vw,64px);font-weight:800;line-h
       <div class="pb-wrap"><div class="pb" id="pb"></div></div>
     </div>
 
-    <!-- RESULT -->
     <div class="rw" id="rw">
       <div class="rbox">
         <div class="ricon">🎉</div>
@@ -303,27 +297,8 @@ h1{font-family:var(--fh);font-size:clamp(32px,5.5vw,64px);font-weight:800;line-h
 
   </div>
 
-  <!-- STATS -->
-  <div class="stats-row" style="max-width:740px;width:100%">
-    <div class="stat-box"><div class="stat-n">6</div><div class="stat-l">Design Themes</div></div>
-    <div class="stat-box"><div class="stat-n">30s</div><div class="stat-l">Generation Time</div></div>
-    <div class="stat-box"><div class="stat-n">∞</div><div class="stat-l">Free Portfolios</div></div>
-  </div>
-
-  <!-- HOW -->
-  <div class="how">
-    <div class="how-t">How it works</div>
-    <div class="how-g">
-      <div class="hs"><div class="hn">01</div><div class="ht">Upload CV</div><div class="hd">PDF format + optional photo</div></div>
-      <div class="hs"><div class="hn">02</div><div class="ht">Pick Theme</div><div class="hd">6 professional designs</div></div>
-      <div class="hs"><div class="hn">03</div><div class="ht">AI Builds</div><div class="hd">Claude reads & generates everything</div></div>
-      <div class="hs"><div class="hn">04</div><div class="ht">Go Live Free</div><div class="hd">Drag to Netlify → instant link</div></div>
-    </div>
-  </div>
-
   <div class="foot">
-    Powered by <span>Claude AI</span> · Hosted free on Netlify<br/>
-    Built for entrepreneurs · <a href="https://netlify.com/drop" target="_blank">netlify.com/drop</a> for free hosting
+    Powered by <span>Claude AI</span>
   </div>
 </div>
 
@@ -404,185 +379,67 @@ async function generate(){
   const pw=document.getElementById('pw');pw.classList.add('show');
   const pb=document.getElementById('pb');
 
-  setStep(1,'active');pb.style.width='8%';
-  let cvB64='';
-  try{cvB64=await toB64(cvFile)}catch(e){showErr('Failed to read CV file.');resetProg();return}
+  setStep(1,'active');pb.style.width='10%';
+  
+  const reader = new FileReader();
+  reader.readAsDataURL(cvFile);
+  reader.onload = async () => {
+    const b64 = reader.result.split(',')[1];
+    setStep(1,'done'); setStep(2,'active'); pb.style.width='40%';
+    
+    try {
+      const response = await fetch('/api/claude', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 8000,
+          messages: [{
+            role: "user",
+            content: `Generate a full professional HTML portfolio using this CV (Base64). Theme: ${selTheme}. Return ONLY code starting with <!DOCTYPE html>. CV: ${b64}`
+          }]
+        })
+      });
 
-  setStep(1,'done');setStep(2,'active');pb.style.width='28%';
-  let cvData;
-  try{cvData=await extractCV(cvB64)}catch(e){showErr('AI error: '+e.message);resetProg();return}
-
-  setStep(2,'done');setStep(3,'active');pb.style.width='58%';
-  let html='';
-  try{html=await buildPortfolio(cvData,selTheme,phBase64)}catch(e){showErr('Build error: '+e.message);resetProg();return}
-
-  setStep(3,'done');setStep(4,'active');pb.style.width='88%';
-  await sleep(600);setStep(4,'done');pb.style.width='100%';await sleep(400);
-
-  genHTML=html;
-  pw.classList.remove('show');
-  document.getElementById('rw').classList.add('show');
-  document.getElementById('gbtn').disabled=false;
-}
-
-function toB64(file){
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=()=>res(r.result.split(',')[1]);
-    r.onerror=()=>rej(new Error('Read failed'));
-    r.readAsDataURL(file);
-  });
-}
-
-/* API CALLS — go through Netlify Function */
-async function callClaude(payload){
-  const r=await fetch('/api/claude',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
-  });
-  const data=await r.json();
-  if(!r.ok)throw new Error(data.error||'Server error '+r.status);
-  return data;
-}
-
-async function extractCV(b64){
-  const data=await callClaude({
-    model:'claude-sonnet-4-20250514',
-    max_tokens:4000,
-    system:`You are a CV parser. Extract ALL information from the provided CV/resume PDF and return it as a single valid JSON object. Return ONLY raw JSON — no markdown, no backticks, no explanation.
-
-JSON structure:
-{
-  "name": "Full Name",
-  "initials": "FA",
-  "title": "Job Title / Professional Field",
-  "summary": "Career summary text",
-  "email": "email",
-  "phone": "phone",
-  "location": "City, Country",
-  "nationality": "if present",
-  "stats": [{"num":"10+","label":"Years Exp."},{"num":"5","label":"Certifications"},{"num":"3.8","label":"GPA"}],
-  "skills": [{"name":"Skill","pct":85,"color":"ind"}],
-  "chips": ["skill1","skill2"],
-  "experience": [{"title":"","company":"","date":"","location":"","bullets":[""],"badges":[{"text":"","color":"bi"}]}],
-  "projects": [{"emoji":"🏆","name":"","desc":"","tags":[""]}],
-  "education": [{"icon":"🎓","iconBg":"rgba(79,70,229,.15)","degree":"","institution":"","year":"","desc":"","badges":[{"text":"","color":"bi"}]}],
-  "languages": [{"name":"Arabic","native":"العربية · Arabic","level":"Native","type":"native","dots":5}],
-  "marquee": ["org1","org2"]
-}
-
-Skill colors: ind=indigo, pnk=pink, cyn=cyan, amb=amber, grn=green. Alternate them.
-Badge colors: bi=indigo, bp=pink, bc=cyan, ba=amber, bg=green.
-Generate 6+ project cards from certs, achievements, notable work, or training.`,
-    messages:[{role:'user',content:[
-      {type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}},
-      {type:'text',text:'Extract all CV information and return as the specified JSON. Return ONLY the JSON object.'}
-    ]}]
-  });
-  const txt=data.content.filter(b=>b.type==='text').map(b=>b.text).join('').replace(/```json|```/g,'').trim();
-  try{return JSON.parse(txt)}catch(e){throw new Error('Could not parse CV data.')}
-}
-
-const THEME_PROMPTS={
-  dark:`THEME: Cosmic Dark. Dark bg #07070f, indigo/pink/cyan/amber accents, particle canvas, shimmer text, glassmorphism cards, custom cyan+pink cursor, frosted navbar.`,
-  gov:`THEME: Government Official. Very dark navy #0f172a bg, gold #c9a227 primary accent, slate blue secondary. Subtle diagonal grid pattern instead of particles. Clean formal typography. Official badge aesthetic. Cards have thin gold left-border. Minimal animations — professional fades only. Footer has 🏛️ seal. Restrained palette: navy, gold, white.`,
-  nature:`THEME: Nature & Eco. Dark forest greens #0a1a0a/#0d2b1a. Emerald #10b981, teal #06b6d4, leaf green #22c55e accents. Green/teal particles only. Organic shapes, generous border-radius. Leaf SVG pattern in hero bg. Skill bars in emerald. Green glow on hover. 🌿 emoji accents in section headers.`,
-  minimal:`THEME: Clean Minimal. Pure white #fff bg, light gray #f8fafc sections. Near-black #0f172a text. Single accent: indigo #4f46e5 for highlights only. NO particles — clean white bg. NO glowing/neon. Typography-first: huge Syne headings + light DM Sans. White cards, gray borders, minimal shadow. Thin 4px skill bars. Subtle 20px translateY animations only. Navbar: white/95, thin gray border. Swiss/editorial feel.`,
-  luxury:`THEME: Gold Luxury. Very dark warm blacks #0a0805/#1a1208. Gold gradient #c9a227→#f0d060 primary. Warm white #f5f0e8 text. Golden particles only. Hero: large initials in gold ring, name in gold shimmer. All headings in gold gradient. Cards: #120f08 bg, 1px gold border. Gold-fill skill bars with shimmer. Gold timeline. Dubai premium luxury aesthetic.`,
-  tech:`THEME: Tech/Developer. Pure dark #020817, deep navy. Electric cyan #22d3ee, violet #818cf8, neon green #4ade80. Cyan/violet particles. Hero name with blinking cursor effect after it. Subtle scanline overlay (CSS). Skills as terminal/code-style bars. Small // comment decorations e.g. // EXPERIENCE. Chips styled as <tag/>. Section headers use // prefix. Contact as terminal card with > prompt. All glows cyan.`
-};
-
-async function buildPortfolio(cv,theme,photoB64){
-  const themePrompt=THEME_PROMPTS[theme]||THEME_PROMPTS.dark;
-  const photoInstruction=photoB64
-    ?`PHOTO: Embed this exact base64 data URL as <img src="..."> in the hero section (circular, bordered) and in the contact avatar: ${photoB64}`
-    :`PHOTO: No photo. Use initials "${cv.initials}" in a styled gradient circle avatar.`;
-
-  const data=await callClaude({
-    model:'claude-sonnet-4-20250514',
-    max_tokens:8000,
-    system:`You are an expert frontend developer. Generate a COMPLETE single-file HTML portfolio website. Return ONLY the HTML starting with <!DOCTYPE html> — no explanation, no markdown.
-
-REQUIREMENTS:
-- Pure HTML/CSS/JS only — zero external JS libraries
-- Google Fonts via link tag: Syne + DM Sans
-- Fully responsive, mobile single-column
-- Custom scrollbar with gradient
-- Full-screen loader: initials + gradient progress bar, fades after 2s
-- Fixed frosted-glass navbar: name left, nav links right
-- Hero: 2-col, shimmer gradient name, availability badge, 3D floating card with stats, spinning ring, glowing orb
-- Skills: animated bars via IntersectionObserver + shimmer + chip cloud
-- Experience: vertical timeline, slide-in cards
-- Projects: 3-col grid, gradient top-border sweep on hover  
-- Education & Languages section
-- Contact: sliding cards + ripple avatar
-- Infinite marquee with companies
-- All scroll reveals via IntersectionObserver
-- Everything in ONE self-contained HTML file`,
-    messages:[{role:'user',content:`${themePrompt}
-
-${photoInstruction}
-
-CV DATA:
-${JSON.stringify(cv,null,2)}
-
-Generate the complete portfolio HTML now.`}]
-  });
-  const html=data.content.filter(b=>b.type==='text').map(b=>b.text).join('').trim();
-  const start=html.indexOf('<!DOCTYPE');
-  if(start===-1)throw new Error('Invalid HTML generated.');
-  return html.substring(start);
+      const data = await response.json();
+      let html = data.content[0].text;
+      const start = html.indexOf('<!DOCTYPE html>');
+      if(start!==-1) html = html.substring(start);
+      
+      genHTML = html;
+      setStep(2,'done'); setStep(3,'done'); setStep(4,'done'); pb.style.width='100%';
+      document.getElementById('pw').classList.remove('show');
+      document.getElementById('rw').classList.add('show');
+      document.getElementById('gbtn').disabled=false;
+    } catch(err) {
+      showErr(err.message);
+      document.getElementById('gbtn').disabled=false;
+    }
+  };
 }
 
 /* DOWNLOAD & PREVIEW */
-document.getElementById('dl-btn').addEventListener('click',()=>{
-  if(!genHTML)return;
-  const name=(document.getElementById('cv-name').textContent||'portfolio').replace('.pdf','');
-  const blob=new Blob([genHTML],{type:'text/html'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);a.download=name+'-portfolio.html';
-  a.click();URL.revokeObjectURL(a.href);
-});
-document.getElementById('prev-btn').addEventListener('click',()=>{
-  if(!genHTML)return;
-  window.open(URL.createObjectURL(new Blob([genHTML],{type:'text/html'})),'_blank');
-});
+document.getElementById('dl-btn').onclick = () => {
+  const blob = new Blob([genHTML], {type:'text/html'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='portfolio.html'; a.click();
+};
+
+document.getElementById('prev-btn').onclick = () => {
+  const win = window.open('', '_blank');
+  win.document.write(genHTML);
+  win.document.close();
+};
+
 document.getElementById('reset-btn').addEventListener('click',()=>{
-  cvFile=null;phFile=null;phBase64='';genHTML='';
-  ['cv-input','ph-input'].forEach(id=>{document.getElementById(id).value=''});
-  ['cv-pill','ph-pill'].forEach(id=>document.getElementById(id).classList.remove('show'));
-  ['cv-zone','ph-zone'].forEach(id=>document.getElementById(id).classList.remove('has-file'));
-  document.getElementById('ph-thumb').src='';
-  document.getElementById('gbtn').disabled=true;
-  hideErr();
-  document.getElementById('rw').classList.remove('show');
-  document.getElementById('pw').classList.remove('show');
-  document.getElementById('pb').style.width='0';
-  ['s1','s2','s3','s4'].forEach((id,i)=>{
-    const el=document.getElementById(id);
-    el.classList.remove('active','done');
-    el.querySelector('.si').textContent=['📤','🤖','🎨','🖼️'][i];
-  });
+  location.reload();
 });
 
-/* HELPERS */
 function setStep(n,state){
   const el=document.getElementById('s'+n);el.classList.remove('active','done');el.classList.add(state);
   if(state==='done')el.querySelector('.si').textContent='✓';
 }
-function resetProg(){
-  document.getElementById('pw').classList.remove('show');
-  document.getElementById('pb').style.width='0';
-  ['s1','s2','s3','s4'].forEach((id,i)=>{
-    const el=document.getElementById(id);el.classList.remove('active','done');
-    el.querySelector('.si').textContent=['📤','🤖','🎨','🖼️'][i];
-  });
-  document.getElementById('gbtn').disabled=false;
-}
 function showErr(m){const e=document.getElementById('err');e.textContent=m;e.classList.add('show')}
 function hideErr(){document.getElementById('err').classList.remove('show')}
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 </script>
 </body>
 </html>
