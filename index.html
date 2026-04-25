@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
+/* إعدادات التصميم الأساسية */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#07070f;--bg2:#0d0d1a;
@@ -18,571 +19,158 @@
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--indigo),var(--pink));border-radius:3px}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9998;opacity:.3}
-#bgc{position:fixed;inset:0;z-index:0;pointer-events:none}
-
 .app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:50px 20px 80px}
-
-/* HEADER */
 .header{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:48px;text-align:center}
-.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(79,70,229,.12);border:1px solid rgba(79,70,229,.3);border-radius:99px;padding:6px 18px;font-size:12px;color:var(--il);letter-spacing:.1em;text-transform:uppercase}
-.bdot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pd 2s infinite}
-@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
-h1{font-family:var(--fh);font-size:clamp(32px,5.5vw,64px);font-weight:800;line-height:1.05;background:linear-gradient(135deg,#fff 10%,var(--il) 35%,var(--pink) 60%,var(--cyan) 85%,#fff);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:sh 4s linear infinite}
-@keyframes sh{0%{background-position:0% 50%}100%{background-position:300% 50%}}
-.sub{font-size:15px;color:var(--muted);max-width:500px;line-height:1.6;text-align:center}
-.sub span{color:var(--cyan);font-weight:500}
-
-/* CARD */
-.card{width:100%;max-width:740px;background:var(--glass);border:1px solid var(--border);border-radius:24px;padding:44px;backdrop-filter:blur(20px);box-shadow:0 24px 80px rgba(0,0,0,.4)}
-
-/* SECTION LABEL */
-.sl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink);font-weight:600;font-family:var(--fh);margin-bottom:12px}
-
-/* DIV */
-.dv{height:1px;background:var(--border);margin:28px 0}
-
-/* UPLOAD ZONES */
-.uploads-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.uzone{border:2px dashed rgba(79,70,229,.3);border-radius:var(--r);padding:32px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:.3s;position:relative;overflow:hidden;text-align:center}
-.uzone:hover,.uzone.drag{border-color:var(--cyan);background:rgba(6,182,212,.04)}
-.uzone.has-file{border-color:rgba(16,185,129,.5);background:rgba(16,185,129,.04)}
-.uzone-icon{font-size:36px;transition:transform .3s}
-.uzone:hover .uzone-icon{transform:translateY(-3px) scale(1.08)}
-.uzone-title{font-family:var(--fh);font-size:15px;font-weight:700}
-.uzone-sub{font-size:12px;color:var(--muted)}
-.uzone-sub span{color:var(--il)}
+h1{font-family:var(--fh);font-size:clamp(32px,5.5vw,64px);font-weight:800;background:linear-gradient(135deg,#fff,var(--il),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card{width:100%;max-width:740px;background:var(--glass);border:1px solid var(--border);border-radius:24px;padding:44px;backdrop-filter:blur(20px)}
+.uzone{border:2px dashed rgba(79,70,229,.3);border-radius:var(--r);padding:32px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:.3s;position:relative}
+.uzone:hover{border-color:var(--cyan)}
 .uzone input{position:absolute;inset:0;opacity:0;cursor:pointer}
-.fpill{display:none;align-items:center;gap:8px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:8px 12px;margin-top:8px;font-size:12px}
-.fpill.show{display:flex}
-.fp-name{flex:1;color:var(--text);font-weight:500;word-break:break-all}
-.fp-rm{background:rgba(236,72,153,.15);border:1px solid rgba(236,72,153,.3);color:var(--pink);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;transition:.2s}
-.fp-rm:hover{background:rgba(236,72,153,.3)}
-.ph-thumb{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);box-shadow:0 0 10px rgba(6,182,212,.3)}
-
-/* THEMES */
-.themes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.tc{border:2px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:.25s;position:relative}
-.tc:hover{border-color:rgba(255,255,255,.2);transform:translateY(-3px)}
-.tc.sel{border-color:var(--cyan);box-shadow:0 0 20px rgba(6,182,212,.25)}
-.tc.sel::after{content:'✓';position:absolute;top:8px;right:8px;width:22px;height:22px;background:var(--cyan);color:#07070f;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;z-index:1}
-.tp{height:88px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.tlabel{padding:8px 10px;background:rgba(0,0,0,.5);font-size:11px;font-weight:700;font-family:var(--fh);letter-spacing:.05em;text-align:center}
-
-/* Theme previews */
-.t-dark{background:linear-gradient(135deg,#07070f,#1a0a2e,#0d1f3c)}
-.t-gov{background:linear-gradient(135deg,#0f172a,#1e293b)}
-.t-nature{background:linear-gradient(135deg,#0a1a0a,#0d2b1a)}
-.t-minimal{background:#f0f0f0}
-.t-luxury{background:linear-gradient(135deg,#0a0805,#1a1208)}
-.t-tech{background:linear-gradient(135deg,#020817,#0f172a)}
-
-.tp-inner{display:flex;flex-direction:column;gap:6px;align-items:center}
-.tp-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800}
-.tp-bar{height:3px;border-radius:2px}
-.tp-bar2{height:2px;border-radius:2px}
-
-/* ERROR */
-.err{display:none;margin-top:16px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:14px 18px;font-size:13px;color:#fca5a5;line-height:1.6}
-.err.show{display:block}
-
-/* GEN BTN */
-.gbtn{width:100%;margin-top:28px;padding:18px;border-radius:14px;background:linear-gradient(135deg,var(--indigo),var(--pink));color:#fff;font-family:var(--fh);font-size:17px;font-weight:700;border:none;cursor:pointer;position:relative;overflow:hidden;box-shadow:0 4px 30px rgba(79,70,229,.4);transition:transform .2s,box-shadow .2s;letter-spacing:.03em}
-.gbtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 40px rgba(79,70,229,.6)}
-.gbtn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-.gbtn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transform:translateX(-100%);transition:.5s}
-.gbtn:hover:not(:disabled)::before{transform:translateX(100%)}
-
-/* PROGRESS */
-.pw{display:none;margin-top:28px}
-.pw.show{display:block}
-.steps{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
-.step{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted);transition:.3s}
-.step.active{color:var(--text)}
-.step.done{color:var(--green)}
-.si{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;background:rgba(255,255,255,.05);border:1px solid var(--border);transition:.3s}
-.step.active .si{background:rgba(79,70,229,.2);border-color:var(--indigo);animation:ps .8s infinite alternate}
-.step.done .si{background:rgba(16,185,129,.2);border-color:var(--green)}
-@keyframes ps{0%{box-shadow:0 0 0 0 rgba(79,70,229,.4)}100%{box-shadow:0 0 0 6px rgba(79,70,229,0)}}
-.pb-wrap{height:4px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
-.pb{height:100%;width:0;background:linear-gradient(90deg,var(--indigo),var(--pink),var(--cyan));border-radius:99px;transition:width .5s ease}
-
-/* RESULT */
-.rw{display:none;margin-top:24px}
-.rw.show{display:block}
-.rbox{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.22);border-radius:var(--r);padding:28px;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center}
-.ricon{font-size:52px;filter:drop-shadow(0 0 16px rgba(16,185,129,.5))}
-.rtitle{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--green)}
-.rsub{font-size:13px;color:var(--muted);line-height:1.6;max-width:480px}
-.rbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.rb{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:11px;font-size:13px;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:.2s;font-family:var(--fb)}
-.rb:hover{transform:translateY(-2px)}
-.rb-p{background:linear-gradient(135deg,var(--indigo),var(--pink));color:#fff;box-shadow:0 4px 18px rgba(79,70,229,.35)}
-.rb-p:hover{box-shadow:0 7px 28px rgba(79,70,229,.55)}
-.rb-o{background:var(--glass);border:1px solid var(--border);color:var(--text)}
-.rb-o:hover{border-color:var(--cyan);box-shadow:0 0 14px rgba(6,182,212,.18)}
-
-/* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:32px}
-.stat-box{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:18px;text-align:center}
-.stat-n{font-family:var(--fh);font-size:26px;font-weight:800;background:linear-gradient(135deg,var(--il),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.stat-l{font-size:12px;color:var(--muted);margin-top:4px}
-
-/* HOW */
-.how{width:100%;max-width:740px;margin-top:36px}
-.how-t{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:20px}
-.how-g{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.hs{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:18px 14px;text-align:center;display:flex;flex-direction:column;gap:6px}
-.hn{font-family:var(--fh);font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--il),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.ht{font-size:12px;font-weight:700;font-family:var(--fh)}
-.hd{font-size:11px;color:var(--muted);line-height:1.5}
-
-.foot{margin-top:40px;font-size:12px;color:var(--muted);text-align:center;line-height:1.8}
-.foot span{color:var(--pink)}
-.foot a{color:var(--il);text-decoration:none}
-.foot a:hover{text-decoration:underline}
-
-@media(max-width:640px){
-  .card{padding:24px 18px}
-  .uploads-row{grid-template-columns:1fr}
-  .themes-grid{grid-template-columns:1fr 1fr}
-  .how-g{grid-template-columns:1fr 1fr}
-  .stats-row{grid-template-columns:1fr 1fr}
-  .rbtns{flex-direction:column;width:100%}
-  .rb{justify-content:center}
-}
+.themes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+.tc{border:2px solid var(--border);border-radius:14px;padding:10px;cursor:pointer;text-align:center;transition:.25s}
+.tc.sel{border-color:var(--cyan);background:rgba(6,182,212,.1)}
+.gbtn{width:100%;margin-top:28px;padding:18px;border-radius:14px;background:linear-gradient(135deg,var(--indigo),var(--pink));color:#fff;font-weight:700;border:none;cursor:pointer}
+.gbtn:disabled{opacity:.5}
+.pw{display:none;margin-top:20px}
+.rw{display:none;margin-top:24px;text-align:center}
+.rbox{background:rgba(16,185,129,.1);border:1px solid var(--green);padding:20px;border-radius:16px}
+.err{display:none;color:#ff4444;margin-top:10px}
+@media(max-width:640px){ .themes-grid{grid-template-columns:1fr 1fr} }
 </style>
 </head>
 <body>
-<canvas id="bgc"></canvas>
 <div class="app">
-
   <div class="header">
-    <div class="badge"><span class="bdot"></span> AI-Powered · 6 Themes · Free Hosting</div>
-    <h1>CV → Portfolio Pro</h1>
-    <p class="sub">Upload your CV + optional photo, pick a theme, and get a <span>stunning animated portfolio</span> in 30 seconds.</p>
+    <h1>CV → Portfolio AI</h1>
+    <p style="color:var(--muted)">حول سيرتك الذاتية إلى موقع احترافي خلال ثوانٍ</p>
   </div>
 
   <div class="card">
-
-    <!-- UPLOADS -->
-    <div class="sl">📁 Upload Files</div>
-    <div class="uploads-row">
-      <div>
-        <div class="uzone" id="cv-zone">
-          <input type="file" id="cv-input" accept=".pdf"/>
-          <div class="uzone-icon">📄</div>
-          <div class="uzone-title">CV / Resume</div>
-          <div class="uzone-sub"><span>PDF only</span> · drag or click</div>
-        </div>
-        <div class="fpill" id="cv-pill">
-          <span class="fp-name" id="cv-name"></span>
-          <button class="fp-rm" id="cv-rm">✕</button>
-        </div>
-      </div>
-      <div>
-        <div class="uzone" id="ph-zone">
-          <input type="file" id="ph-input" accept="image/*"/>
-          <div class="uzone-icon">🖼️</div>
-          <div class="uzone-title">Profile Photo</div>
-          <div class="uzone-sub"><span>Optional</span> · JPG / PNG</div>
-        </div>
-        <div class="fpill" id="ph-pill">
-          <img id="ph-thumb" class="ph-thumb" src="" alt=""/>
-          <span class="fp-name" id="ph-name"></span>
-          <button class="fp-rm" id="ph-rm">✕</button>
-        </div>
-      </div>
+    <div class="uzone" id="cv-zone">
+      <input type="file" id="cv-input" accept=".pdf"/>
+      <div style="font-size:40px">📄</div>
+      <div style="font-weight:700">ارفع ملف الـ CV (PDF)</div>
     </div>
+    
+    <div id="cv-name-display" style="margin-top:10px; font-size:12px; color:var(--green); text-align:center"></div>
 
-    <div class="dv"></div>
-
-    <!-- THEMES -->
-    <div class="sl">🎨 Choose Design Theme</div>
     <div class="themes-grid" id="themes-grid">
-
-      <div class="tc sel" data-theme="dark">
-        <div class="tp t-dark">
-          <div class="tp-inner">
-            <div class="tp-dot" style="background:linear-gradient(135deg,#4f46e5,#ec4899);color:#fff">AB</div>
-            <div class="tp-bar" style="width:72px;background:linear-gradient(90deg,#4f46e5,#ec4899)"></div>
-            <div class="tp-bar2" style="width:48px;background:linear-gradient(90deg,#06b6d4,#818cf8)"></div>
-          </div>
-        </div>
-        <div class="tlabel">🌌 Cosmic Dark</div>
-      </div>
-
-      <div class="tc" data-theme="gov">
-        <div class="tp t-gov">
-          <div class="tp-inner">
-            <div style="background:rgba(201,162,39,.2);border:1px solid rgba(201,162,39,.4);border-radius:4px;padding:2px 10px;font-size:9px;color:#c9a227;letter-spacing:.1em">OFFICIAL</div>
-            <div class="tp-bar" style="width:68px;background:#c9a227"></div>
-            <div class="tp-bar2" style="width:44px;background:rgba(201,162,39,.5)"></div>
-          </div>
-        </div>
-        <div class="tlabel">🏛️ Government</div>
-      </div>
-
-      <div class="tc" data-theme="nature">
-        <div class="tp t-nature">
-          <div class="tp-inner">
-            <div style="font-size:26px">🌿</div>
-            <div class="tp-bar" style="width:68px;background:linear-gradient(90deg,#10b981,#06b6d4)"></div>
-          </div>
-        </div>
-        <div class="tlabel">🌱 Nature & Eco</div>
-      </div>
-
-      <div class="tc" data-theme="minimal">
-        <div class="tp t-minimal">
-          <div class="tp-inner">
-            <div style="font-size:11px;font-weight:800;color:#111;font-family:'Syne',sans-serif;letter-spacing:.02em">JANE DOE</div>
-            <div style="font-size:9px;color:#666">Senior Designer</div>
-            <div class="tp-bar" style="width:60px;background:#111"></div>
-          </div>
-        </div>
-        <div class="tlabel">⬜ Clean Minimal</div>
-      </div>
-
-      <div class="tc" data-theme="luxury">
-        <div class="tp t-luxury">
-          <div class="tp-inner">
-            <div style="width:34px;height:34px;border-radius:50%;border:1.5px solid #c9a227;display:flex;align-items:center;justify-content:center;font-size:9px;color:#c9a227;font-weight:700">JD</div>
-            <div class="tp-bar" style="width:68px;background:linear-gradient(90deg,#c9a227,#f0d060,#c9a227)"></div>
-          </div>
-        </div>
-        <div class="tlabel">✨ Gold Luxury</div>
-      </div>
-
-      <div class="tc" data-theme="tech">
-        <div class="tp t-tech">
-          <div class="tp-inner">
-            <div style="font-size:9px;color:#22d3ee;font-family:monospace;letter-spacing:.05em">&gt; portfolio.exe</div>
-            <div class="tp-bar" style="width:64px;background:linear-gradient(90deg,#22d3ee,#818cf8)"></div>
-            <div class="tp-bar2" style="width:40px;background:linear-gradient(90deg,#818cf8,#4ade80)"></div>
-          </div>
-        </div>
-        <div class="tlabel">💻 Tech / Dev</div>
-      </div>
-
+      <div class="tc sel" data-theme="dark">Cosmic Dark</div>
+      <div class="tc" data-theme="minimal">Minimal</div>
+      <div class="tc" data-theme="tech">Developer</div>
     </div>
 
-    <!-- ERROR -->
     <div class="err" id="err"></div>
+    <button class="gbtn" id="gbtn">ابدأ التصميم الآن ⚡</button>
 
-    <!-- GEN BTN -->
-    <button class="gbtn" id="gbtn">⚡ Generate My Portfolio</button>
-
-    <!-- PROGRESS -->
     <div class="pw" id="pw">
-      <div class="steps">
-        <div class="step" id="s1"><div class="si">📤</div><span>Reading your CV…</span></div>
-        <div class="step" id="s2"><div class="si">🤖</div><span>AI extracting all your information…</span></div>
-        <div class="step" id="s3"><div class="si">🎨</div><span>Building your custom portfolio…</span></div>
-        <div class="step" id="s4"><div class="si">🖼️</div><span>Embedding photo &amp; finalising…</span></div>
+      <div id="status-text" style="text-align:center; margin-bottom:10px">جاري معالجة البيانات...</div>
+      <div style="height:4px; background:#222; border-radius:10px overflow:hidden">
+        <div id="pb" style="height:100%; width:0%; background:var(--cyan); transition:0.3s"></div>
       </div>
-      <div class="pb-wrap"><div class="pb" id="pb"></div></div>
     </div>
 
-    <!-- RESULT -->
     <div class="rw" id="rw">
       <div class="rbox">
-        <div class="ricon">🎉</div>
-        <div class="rtitle">Your Portfolio is Ready!</div>
-        <div class="rsub">Download the HTML file and drag it to <strong>netlify.com/drop</strong> to get a free live link in seconds.</div>
-        <div class="rbtns">
-          <button class="rb rb-p" id="dl-btn">⬇️ Download HTML</button>
-          <button class="rb rb-o" id="prev-btn">👁️ Preview</button>
-          <button class="rb rb-o" id="reset-btn">🔄 New CV</button>
+        <h3 style="color:var(--green)">تم التجهيز بنجاح! 🎉</h3>
+        <div style="margin-top:15px; display:flex; gap:10px; justify-content:center">
+          <button class="gbtn" id="dl-btn" style="margin:0; width:auto">تحميل الملف HTML</button>
+          <button class="gbtn" id="prev-btn" style="margin:0; width:auto; background:var(--bg2); border:1px solid var(--cyan)">معاينة</button>
         </div>
       </div>
     </div>
-
-  </div>
-
-  <!-- STATS -->
-  <div class="stats-row" style="max-width:740px;width:100%">
-    <div class="stat-box"><div class="stat-n">6</div><div class="stat-l">Design Themes</div></div>
-    <div class="stat-box"><div class="stat-n">30s</div><div class="stat-l">Generation Time</div></div>
-    <div class="stat-box"><div class="stat-n">∞</div><div class="stat-l">Free Portfolios</div></div>
-  </div>
-
-  <!-- HOW -->
-  <div class="how">
-    <div class="how-t">How it works</div>
-    <div class="how-g">
-      <div class="hs"><div class="hn">01</div><div class="ht">Upload CV</div><div class="hd">PDF format + optional photo</div></div>
-      <div class="hs"><div class="hn">02</div><div class="ht">Pick Theme</div><div class="hd">6 professional designs</div></div>
-      <div class="hs"><div class="hn">03</div><div class="ht">AI Builds</div><div class="hd">Claude reads & generates everything</div></div>
-      <div class="hs"><div class="hn">04</div><div class="ht">Go Live Free</div><div class="hd">Drag to Netlify → instant link</div></div>
-    </div>
-  </div>
-
-  <div class="foot">
-    Powered by <span>Claude AI</span> · Hosted free on Netlify<br/>
-    Built for entrepreneurs · <a href="https://netlify.com/drop" target="_blank">netlify.com/drop</a> for free hosting
   </div>
 </div>
 
 <script>
-/* PARTICLE BG */
-(function(){
-  const cv=document.getElementById('bgc'),cx=cv.getContext('2d');
-  const C=['#4f46e5','#ec4899','#06b6d4','#f59e0b'];
-  let W,H,pts=[];
-  const rs=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};
-  rs();addEventListener('resize',()=>{rs();init()});
-  const rn=(a,b)=>Math.random()*(b-a)+a;
-  const init=()=>{pts=[];const N=Math.floor(W*H/15000);for(let i=0;i<N;i++)pts.push({x:rn(0,W),y:rn(0,H),vx:rn(-.2,.2),vy:rn(-.2,.2),r:rn(1,2.2),c:C[Math.floor(rn(0,C.length))]})};
-  init();
-  const draw=()=>{
-    cx.clearRect(0,0,W,H);
-    pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;cx.beginPath();cx.arc(p.x,p.y,p.r,0,Math.PI*2);cx.fillStyle=p.c;cx.globalAlpha=.5;cx.fill()});
-    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){cx.beginPath();cx.moveTo(pts[i].x,pts[i].y);cx.lineTo(pts[j].x,pts[j].y);cx.strokeStyle=pts[i].c;cx.globalAlpha=(1-d/100)*.14;cx.lineWidth=.5;cx.stroke()}}
-    cx.globalAlpha=1;requestAnimationFrame(draw);
-  };
-  draw();
-})();
+let cvFile = null;
+let selTheme = 'dark';
+let genHTML = '';
 
-/* STATE */
-let cvFile=null,phFile=null,phBase64='',selTheme='dark',genHTML='';
+// اختيار الملف
+document.getElementById('cv-input').addEventListener('change', (e) => {
+  cvFile = e.target.files[0];
+  if(cvFile) document.getElementById('cv-name-display').innerText = "تم اختيار: " + cvFile.name;
+});
 
-/* FILE UPLOAD HELPERS */
-function setupUpload(zoneId,inputId,pillId,nameId,rmId,type){
-  const zone=document.getElementById(zoneId);
-  const input=document.getElementById(inputId);
-  const pill=document.getElementById(pillId);
-  const nameEl=document.getElementById(nameId);
-  const rm=document.getElementById(rmId);
-  zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag')});
-  zone.addEventListener('dragleave',()=>zone.classList.remove('drag'));
-  zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag');if(e.dataTransfer.files[0])handle(e.dataTransfer.files[0])});
-  input.addEventListener('change',()=>{if(input.files[0])handle(input.files[0])});
-  rm.addEventListener('click',()=>{
-    if(type==='cv'){cvFile=null;}else{phFile=null;phBase64='';document.getElementById('ph-thumb').src='';}
-    input.value='';pill.classList.remove('show');zone.classList.remove('has-file');checkReady();
-  });
-  function handle(f){
-    if(type==='cv'){
-      if(f.type!=='application/pdf'){showErr('CV must be a PDF file.');return}
-      cvFile=f;nameEl.textContent=f.name;
-    } else {
-      if(!f.type.startsWith('image/')){showErr('Photo must be JPG or PNG.');return}
-      phFile=f;nameEl.textContent=f.name;
-      const r=new FileReader();
-      r.onload=e=>{phBase64=e.target.result;document.getElementById('ph-thumb').src=phBase64};
-      r.readAsDataURL(f);
-    }
-    pill.classList.add('show');zone.classList.add('has-file');hideErr();checkReady();
+// اختيار الثيم
+document.getElementById('themes-grid').addEventListener('click', (e) => {
+  if(e.target.classList.contains('tc')) {
+    document.querySelectorAll('.tc').forEach(t => t.classList.remove('sel'));
+    e.target.classList.add('sel');
+    selTheme = e.target.dataset.theme;
+  }
+});
+
+// زر التوليد
+document.getElementById('gbtn').addEventListener('click', generate);
+
+async function generate() {
+  if(!cvFile) { showErr("الرجاء رفع ملف الـ CV أولاً"); return; }
+  
+  hideErr();
+  document.getElementById('gbtn').disabled = true;
+  document.getElementById('pw').style.display = 'block';
+  const pb = document.getElementById('pb');
+  
+  try {
+    pb.style.width = "30%";
+    const reader = new FileReader();
+    reader.readAsDataURL(cvFile);
+    
+    reader.onload = async () => {
+      const b64 = reader.result.split(',')[1];
+      pb.style.width = "60%";
+      
+      const response = await fetch('/api/claude', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 8000,
+          messages: [{
+            role: "user",
+            content: `Generate a professional HTML portfolio using this CV (Base64). Theme: ${selTheme}. Return ONLY the HTML code starting with <!DOCTYPE html>. CV Data: ${b64}`
+          }]
+        })
+      });
+
+      const data = await response.json();
+      if(!response.ok) throw new Error(data.error || "خطأ في الاتصال");
+
+      let html = data.content.filter(b => b.type === 'text').map(b => b.text).join('').trim();
+      const start = html.indexOf('<!DOCTYPE html>');
+      if(start !== -1) html = html.substring(start);
+      
+      genHTML = html;
+      pb.style.width = "100%";
+      document.getElementById('pw').style.display = 'none';
+      document.getElementById('rw').style.display = 'block';
+      document.getElementById('gbtn').disabled = false;
+    };
+  } catch (err) {
+    showErr(err.message);
+    document.getElementById('gbtn').disabled = false;
   }
 }
-setupUpload('cv-zone','cv-input','cv-pill','cv-name','cv-rm','cv');
-setupUpload('ph-zone','ph-input','ph-pill','ph-name','ph-rm','photo');
 
-/* THEMES */
-document.getElementById('themes-grid').addEventListener('click',e=>{
-  const tc=e.target.closest('.tc');if(!tc)return;
-  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));
-  tc.classList.add('sel');selTheme=tc.dataset.theme;
-});
-
-function checkReady(){
-  document.getElementById('gbtn').disabled=!cvFile;
-}
-
-/* GENERATE */
-document.getElementById('gbtn').addEventListener('click',generate);
-
-async function generate(){
-  if(!cvFile){showErr('Please upload a CV first.');return}
-  hideErr();
-  document.getElementById('gbtn').disabled=true;
-  document.getElementById('rw').classList.remove('show');
-  const pw=document.getElementById('pw');pw.classList.add('show');
-  const pb=document.getElementById('pb');
-
-  setStep(1,'active');pb.style.width='8%';
-  let cvB64='';
-  try{cvB64=await toB64(cvFile)}catch(e){showErr('Failed to read CV file.');resetProg();return}
-
-  setStep(1,'done');setStep(2,'active');pb.style.width='28%';
-  let cvData;
-  try{cvData=await extractCV(cvB64)}catch(e){showErr('AI error: '+e.message);resetProg();return}
-
-  setStep(2,'done');setStep(3,'active');pb.style.width='58%';
-  let html='';
-  try{html=await buildPortfolio(cvData,selTheme,phBase64)}catch(e){showErr('Build error: '+e.message);resetProg();return}
-
-  setStep(3,'done');setStep(4,'active');pb.style.width='88%';
-  await sleep(600);setStep(4,'done');pb.style.width='100%';await sleep(400);
-
-  genHTML=html;
-  pw.classList.remove('show');
-  document.getElementById('rw').classList.add('show');
-  document.getElementById('gbtn').disabled=false;
-}
-
-function toB64(file){
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=()=>res(r.result.split(',')[1]);
-    r.onerror=()=>rej(new Error('Read failed'));
-    r.readAsDataURL(file);
-  });
-}
-
-/* API CALLS — go through Netlify Function */
-async function callClaude(payload){
-  const r=await fetch('/api/claude',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
-  });
-  const data=await r.json();
-  if(!r.ok)throw new Error(data.error||'Server error '+r.status);
-  return data;
-}
-
-async function extractCV(b64){
-  const data=await callClaude({
-    model:'claude-sonnet-4-20250514',
-    max_tokens:4000,
-    system:`You are a CV parser. Extract ALL information from the provided CV/resume PDF and return it as a single valid JSON object. Return ONLY raw JSON — no markdown, no backticks, no explanation.
-
-JSON structure:
-{
-  "name": "Full Name",
-  "initials": "FA",
-  "title": "Job Title / Professional Field",
-  "summary": "Career summary text",
-  "email": "email",
-  "phone": "phone",
-  "location": "City, Country",
-  "nationality": "if present",
-  "stats": [{"num":"10+","label":"Years Exp."},{"num":"5","label":"Certifications"},{"num":"3.8","label":"GPA"}],
-  "skills": [{"name":"Skill","pct":85,"color":"ind"}],
-  "chips": ["skill1","skill2"],
-  "experience": [{"title":"","company":"","date":"","location":"","bullets":[""],"badges":[{"text":"","color":"bi"}]}],
-  "projects": [{"emoji":"🏆","name":"","desc":"","tags":[""]}],
-  "education": [{"icon":"🎓","iconBg":"rgba(79,70,229,.15)","degree":"","institution":"","year":"","desc":"","badges":[{"text":"","color":"bi"}]}],
-  "languages": [{"name":"Arabic","native":"العربية · Arabic","level":"Native","type":"native","dots":5}],
-  "marquee": ["org1","org2"]
-}
-
-Skill colors: ind=indigo, pnk=pink, cyn=cyan, amb=amber, grn=green. Alternate them.
-Badge colors: bi=indigo, bp=pink, bc=cyan, ba=amber, bg=green.
-Generate 6+ project cards from certs, achievements, notable work, or training.`,
-    messages:[{role:'user',content:[
-      {type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}},
-      {type:'text',text:'Extract all CV information and return as the specified JSON. Return ONLY the JSON object.'}
-    ]}]
-  });
-  const txt=data.content.filter(b=>b.type==='text').map(b=>b.text).join('').replace(/```json|```/g,'').trim();
-  try{return JSON.parse(txt)}catch(e){throw new Error('Could not parse CV data.')}
-}
-
-const THEME_PROMPTS={
-  dark:`THEME: Cosmic Dark. Dark bg #07070f, indigo/pink/cyan/amber accents, particle canvas, shimmer text, glassmorphism cards, custom cyan+pink cursor, frosted navbar.`,
-  gov:`THEME: Government Official. Very dark navy #0f172a bg, gold #c9a227 primary accent, slate blue secondary. Subtle diagonal grid pattern instead of particles. Clean formal typography. Official badge aesthetic. Cards have thin gold left-border. Minimal animations — professional fades only. Footer has 🏛️ seal. Restrained palette: navy, gold, white.`,
-  nature:`THEME: Nature & Eco. Dark forest greens #0a1a0a/#0d2b1a. Emerald #10b981, teal #06b6d4, leaf green #22c55e accents. Green/teal particles only. Organic shapes, generous border-radius. Leaf SVG pattern in hero bg. Skill bars in emerald. Green glow on hover. 🌿 emoji accents in section headers.`,
-  minimal:`THEME: Clean Minimal. Pure white #fff bg, light gray #f8fafc sections. Near-black #0f172a text. Single accent: indigo #4f46e5 for highlights only. NO particles — clean white bg. NO glowing/neon. Typography-first: huge Syne headings + light DM Sans. White cards, gray borders, minimal shadow. Thin 4px skill bars. Subtle 20px translateY animations only. Navbar: white/95, thin gray border. Swiss/editorial feel.`,
-  luxury:`THEME: Gold Luxury. Very dark warm blacks #0a0805/#1a1208. Gold gradient #c9a227→#f0d060 primary. Warm white #f5f0e8 text. Golden particles only. Hero: large initials in gold ring, name in gold shimmer. All headings in gold gradient. Cards: #120f08 bg, 1px gold border. Gold-fill skill bars with shimmer. Gold timeline. Dubai premium luxury aesthetic.`,
-  tech:`THEME: Tech/Developer. Pure dark #020817, deep navy. Electric cyan #22d3ee, violet #818cf8, neon green #4ade80. Cyan/violet particles. Hero name with blinking cursor effect after it. Subtle scanline overlay (CSS). Skills as terminal/code-style bars. Small // comment decorations e.g. // EXPERIENCE. Chips styled as <tag/>. Section headers use // prefix. Contact as terminal card with > prompt. All glows cyan.`
+// وظائف التحميل والمعاينة
+document.getElementById('dl-btn').onclick = () => {
+  const blob = new Blob([genHTML], {type: 'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'my-portfolio.html';
+  a.click();
 };
 
-async function buildPortfolio(cv,theme,photoB64){
-  const themePrompt=THEME_PROMPTS[theme]||THEME_PROMPTS.dark;
-  const photoInstruction=photoB64
-    ?`PHOTO: Embed this exact base64 data URL as <img src="..."> in the hero section (circular, bordered) and in the contact avatar: ${photoB64}`
-    :`PHOTO: No photo. Use initials "${cv.initials}" in a styled gradient circle avatar.`;
+document.getElementById('prev-btn').onclick = () => {
+  const win = window.open('', '_blank');
+  win.document.write(genHTML);
+  win.document.close();
+};
 
-  const data=await callClaude({
-    model:'claude-sonnet-4-20250514',
-    max_tokens:8000,
-    system:`You are an expert frontend developer. Generate a COMPLETE single-file HTML portfolio website. Return ONLY the HTML starting with <!DOCTYPE html> — no explanation, no markdown.
-
-REQUIREMENTS:
-- Pure HTML/CSS/JS only — zero external JS libraries
-- Google Fonts via link tag: Syne + DM Sans
-- Fully responsive, mobile single-column
-- Custom scrollbar with gradient
-- Full-screen loader: initials + gradient progress bar, fades after 2s
-- Fixed frosted-glass navbar: name left, nav links right
-- Hero: 2-col, shimmer gradient name, availability badge, 3D floating card with stats, spinning ring, glowing orb
-- Skills: animated bars via IntersectionObserver + shimmer + chip cloud
-- Experience: vertical timeline, slide-in cards
-- Projects: 3-col grid, gradient top-border sweep on hover  
-- Education & Languages section
-- Contact: sliding cards + ripple avatar
-- Infinite marquee with companies
-- All scroll reveals via IntersectionObserver
-- Everything in ONE self-contained HTML file`,
-    messages:[{role:'user',content:`${themePrompt}
-
-${photoInstruction}
-
-CV DATA:
-${JSON.stringify(cv,null,2)}
-
-Generate the complete portfolio HTML now.`}]
-  });
-  const html=data.content.filter(b=>b.type==='text').map(b=>b.text).join('').trim();
-  const start=html.indexOf('<!DOCTYPE');
-  if(start===-1)throw new Error('Invalid HTML generated.');
-  return html.substring(start);
-}
-
-/* DOWNLOAD & PREVIEW */
-document.getElementById('dl-btn').addEventListener('click',()=>{
-  if(!genHTML)return;
-  const name=(document.getElementById('cv-name').textContent||'portfolio').replace('.pdf','');
-  const blob=new Blob([genHTML],{type:'text/html'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);a.download=name+'-portfolio.html';
-  a.click();URL.revokeObjectURL(a.href);
-});
-document.getElementById('prev-btn').addEventListener('click',()=>{
-  if(!genHTML)return;
-  window.open(URL.createObjectURL(new Blob([genHTML],{type:'text/html'})),'_blank');
-});
-document.getElementById('reset-btn').addEventListener('click',()=>{
-  cvFile=null;phFile=null;phBase64='';genHTML='';
-  ['cv-input','ph-input'].forEach(id=>{document.getElementById(id).value=''});
-  ['cv-pill','ph-pill'].forEach(id=>document.getElementById(id).classList.remove('show'));
-  ['cv-zone','ph-zone'].forEach(id=>document.getElementById(id).classList.remove('has-file'));
-  document.getElementById('ph-thumb').src='';
-  document.getElementById('gbtn').disabled=true;
-  hideErr();
-  document.getElementById('rw').classList.remove('show');
-  document.getElementById('pw').classList.remove('show');
-  document.getElementById('pb').style.width='0';
-  ['s1','s2','s3','s4'].forEach((id,i)=>{
-    const el=document.getElementById(id);
-    el.classList.remove('active','done');
-    el.querySelector('.si').textContent=['📤','🤖','🎨','🖼️'][i];
-  });
-});
-
-/* HELPERS */
-function setStep(n,state){
-  const el=document.getElementById('s'+n);el.classList.remove('active','done');el.classList.add(state);
-  if(state==='done')el.querySelector('.si').textContent='✓';
-}
-function resetProg(){
-  document.getElementById('pw').classList.remove('show');
-  document.getElementById('pb').style.width='0';
-  ['s1','s2','s3','s4'].forEach((id,i)=>{
-    const el=document.getElementById(id);el.classList.remove('active','done');
-    el.querySelector('.si').textContent=['📤','🤖','🎨','🖼️'][i];
-  });
-  document.getElementById('gbtn').disabled=false;
-}
-function showErr(m){const e=document.getElementById('err');e.textContent=m;e.classList.add('show')}
-function hideErr(){document.getElementById('err').classList.remove('show')}
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function showErr(m) { const e=document.getElementById('err'); e.innerText=m; e.style.display='block'; }
+function hideErr() { document.getElementById('err').style.display='none'; }
 </script>
 </body>
 </html>
